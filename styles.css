@@ -1,4 +1,11 @@
-canvas {
-    margin: 60px auto;
+body {
+    margin: 0px;
+}
+#content {
+    margin: 60px auto 0px auto;
     display: table;
+}
+#description {
+    width: 400px;
+    margin: 60px 0px;
 }
