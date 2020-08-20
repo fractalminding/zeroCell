@@ -5,12 +5,25 @@ let table = {
             table.array[i] = table.row.create(width);
         }
     },
-    array: [],
+    downgradeBigNumbers: function() {
+        let isFinished = true;
+        table.array.forEach(function(row, y) {
+            row.forEach(function(cellText, x) {
+                if (table.cell.isTooBig(x, y)) {
+                    //console.log(x, y, cellText);
+                    table.array[y][x] = table.array[y][x] - 1;
+                    isFinished = false;
+                }
+            });
+        });
+        if (isFinished) return; 
+            else table.downgradeBigNumbers();
+    },
     row: {
         create: function(length) {
             let rowArray = [];
             for (let i = 0; i < length; i++) {
-                rowArray.push(table.cell.getRandomNumber(1, 5));
+                rowArray.push(table.cell.getRandomNumber(1, 8));
             }
             return rowArray;
         }
@@ -24,11 +37,29 @@ let table = {
             if (cellText != 0) {
                 table.array[y][x] = cellText - 1;
             }
+        },
+        upgrade: function(x, y) {
+            let cellText = table.array[y][x];
+            if (cellText != 0) {
+                table.array[y][x] = cellText + 1;
+            }
+        },
+        isTooBig: function(x, y) {
+            let currentCellValue = table.array[y][x];
+            
+            for (let cellCoords of table.getAmbientCells(x, y)) {
+                let cellValue = table.array[cellCoords[1]][cellCoords[0]];
+                if (cellValue >= currentCellValue) {
+                    //console.log('--- ', x, y, currentCellValue, cellValue, cellCoords);
+                    return false;
+                }
+            }
+            //console.log(x, y, currentCellValue, true);
+            return true;
         }
     },
     getAmbientCells: function(x, y) {
         let cellsArray = [];
-        cellsArray.push([x, y]);
         cellsArray.push([x - 1, y - 1]);
         cellsArray.push([x, y - 1]);
         cellsArray.push([x + 1, y - 1]);
@@ -45,12 +76,16 @@ let table = {
     isExistAmbient: function(x, y) {
         return table.getAmbientCells(x, y).filter(function(coords) {
             if (table.array[coords[1]][coords[0]] > 0) return coords;
-        }).length > 1 ? true : false;
+        }).length > 0 ? true : false;
     }
 };
 let canvas = {
     rectColors:
-        ['#e9f2e9','#cbeacb', '#b6d2b6', '#a2bba2', '#8ea38e', '#798c79', '#657565'],
+        ['#ffefe0', 
+        '#fdcb9e', '#fdcb9e', 
+        '#00b7c2', '#00b7c2',
+        '#0f4c75', '#0f4c75', 
+        '#1b262c', '#1b262c'],
     drawRectByCoordinates(x, y) {
         let coordX = x * 40;
         let coordY = y * 40;
@@ -83,9 +118,11 @@ let canvas = {
 }
 let game = {
     init: function() {
+        table.array = [];
         canvas.element = document.getElementById('game');
         canvas.context = canvas.element.getContext('2d');
         table.createArray(10, 10);
+        table.downgradeBigNumbers();
         canvas.draw();
         canvas.element.addEventListener('click', game.actions.click);
     },
@@ -94,13 +131,12 @@ let game = {
             let x = Math.floor(event.offsetX / 40); 
             let y = Math.floor(event.offsetY / 40);
             if (table.array[y][x] == 0) return;
-            //console.log('click');
             if (!table.isExistAmbient(x, y)) return;
-            
+            table.cell.downgrade(x, y);
             for (let coords of table.getAmbientCells(x, y)) {
                 table.cell.downgrade(coords[0], coords[1]);
-                canvas.draw();
             }
+            canvas.draw();
         }
     }
 }

@@ -1,4 +1,14 @@
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans-Regular'),
+        url(open-sans.woff) format('woff'),
+        url(open-sans.ttf) format('truetype');
+}
+
 body {
+    font-family: 'Open Sans', arial;
     margin: 0px;
 }
 #content {
