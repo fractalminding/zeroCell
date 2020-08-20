@@ -59,6 +59,19 @@ let table = {
             return true;
         }
     },
+    isExistActiveCells: function() {
+        let existing = false;
+        table.array.forEach(function(row, y) {
+            row.forEach(function(cellText, x) {
+                if (cellText != 0) {
+                    if (table.isExistAmbient(x, y)) existing = true;
+                    //console.log(x, y, existing);
+                }
+            });
+        });
+        //console.log(existing);
+        return existing;
+    },
     getAmbientCells: function(x, y) {
         let cellsArray = [];
         cellsArray.push([x - 1, y - 1]);
@@ -98,6 +111,11 @@ let canvas = {
         context.fillStyle = canvas.rectColors[cellText];
         context.fillRect(coordX, coordY, width, height);
     },
+    drawFinishScreen() {
+        let context = canvas.context;
+        context.fillStyle = 'green';
+        context.fillRect(0, 0, 400, 400);
+    },
     drawTextLabelByCoordinates(x, y) {
         let coordX = x * 40 + 10;
         let coordY = y * 40 + 30;
@@ -130,6 +148,11 @@ let game = {
         game.balance.element = document.getElementById('balance');
         game.balance.unitedValue = game.balance.getValue();
         game.balance.refresh();
+        game.newGameButton = document.getElementById('newGame');
+        game.newGameButton.addEventListener('click', game.actions.newGame);
+    },
+    checkEnd: function() {
+        if (!table.isExistActiveCells()) game.actions.end();
     },
     balance: {
         refresh: function() {
@@ -165,6 +188,17 @@ let game = {
                 table.cell.downgrade(coords[0], coords[1]);
             }
             canvas.draw();
+            game.balance.refresh();
+            game.checkEnd();
+        },
+        end: function() {
+            canvas.drawFinishScreen();
+        },
+        newGame: function() {
+            table.createArray(10, 10);
+            table.downgradeBigNumbers();
+            canvas.draw();
+            game.balance.unitedValue = game.balance.getValue();
             game.balance.refresh();
         }
     }
