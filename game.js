@@ -81,6 +81,7 @@ let table = {
 };
 let canvas = {
     rectColors:
+        //цвета для клеток по рангу (по порядку: от 0)
         ['#ffefe0', 
         '#fdcb9e', '#fdcb9e', 
         '#00b7c2', '#00b7c2',
