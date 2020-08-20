@@ -78,6 +78,16 @@ let table = {
         //console.log(existing);
         return existing;
     },
+    isExistCells: function() {
+        let existing = false;
+        table.array.forEach(function(row, y) {
+            row.forEach(function(cellText, x) {
+                if (cellText > 0) existing = true;
+            });
+        });
+        //console.log(existing);
+        return existing;
+    },
     getAmbientCells: function(x, y) {
         let cellsArray = [];
         cellsArray.push([x - 1, y - 1]);
@@ -118,9 +128,11 @@ let canvas = {
         context.fillRect(coordX, coordY, width, height);
     },
     drawFinishScreen() {
-        let context = canvas.context;
-        context.fillStyle = 'green';
-        context.fillRect(0, 0, 400, 400);
+        if (table.isExistCells()) {
+            game.showFallScreen();
+        } else {
+            game.showWinScreen();
+        }
     },
     drawTextLabelByCoordinates(x, y) {
         let coordX = x * 40 + 10;
@@ -160,13 +172,23 @@ let game = {
         game.refreshButton.addEventListener('click', game.actions.restart);
         table.originArray = table.originArrayUpdate();
     },
+    showWinScreen: function() {
+        let context = canvas.context;
+        context.fillStyle = 'rgba(0, 184, 194, 0.5)';
+        context.fillRect(0, 0, 400, 400);
+    },
+    showFallScreen() {
+        let context = canvas.context;
+        context.fillStyle = 'rgba(218, 7, 7, 0.5)';
+        context.fillRect(0, 0, 400, 400);
+    },
     checkEnd: function() {
         if (!table.isExistActiveCells()) game.actions.end();
     },
     balance: {
         refresh: function() {
             let element = game.balance.element;
-            let balanceText = `Пройдено ${game.balance.get()} %`
+            let balanceText = `passed ${game.balance.get()} %`
             element.innerHTML = balanceText;
         },
         get: function() {
