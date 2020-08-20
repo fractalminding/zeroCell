@@ -2,20 +2,28 @@
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 400;
-    src: local('Open Sans'), local('OpenSans-Regular'),
-        url(open-sans.woff) format('woff'),
-        url(open-sans.ttf) format('truetype');
+    src: local('Open Sans'), local('OpenSans-Regular'), url(open-sans.woff) format('woff'), url(open-sans.ttf) format('truetype');
 }
 
 body {
     font-family: 'Open Sans', arial;
     margin: 0px;
+    user-select:none;
 }
+
 #content {
     margin: 60px auto 0px auto;
     display: table;
 }
+
 #description {
     width: 400px;
-    margin: 60px 0px;
+    margin: 60px 0px 0px;
+}
+
+#balance {
+    margin: 10px 0px;
+    text-align: right;
+    color: green;
+    font-size: 20px;
 }

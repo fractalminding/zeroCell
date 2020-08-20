@@ -50,7 +50,8 @@ let table = {
             for (let cellCoords of table.getAmbientCells(x, y)) {
                 let cellValue = table.array[cellCoords[1]][cellCoords[0]];
                 if (cellValue >= currentCellValue) {
-                    //console.log('--- ', x, y, currentCellValue, cellValue, cellCoords);
+                    //console.log('--- ', x, y, currentCellValue, 
+                    //cellValue, cellCoords);
                     return false;
                 }
             }
@@ -126,6 +127,32 @@ let game = {
         table.downgradeBigNumbers();
         canvas.draw();
         canvas.element.addEventListener('click', game.actions.click);
+        game.balance.element = document.getElementById('balance');
+        game.balance.unitedValue = game.balance.getValue();
+        game.balance.refresh();
+    },
+    balance: {
+        refresh: function() {
+            let element = game.balance.element;
+            let balanceText = `Пройдено ${game.balance.get()} %`
+            element.innerHTML = balanceText;
+        },
+        get: function() {
+            let passed = game.balance.unitedValue - game.balance.getValue();
+            //console.log(passed);
+            return Math.floor(passed / (game.balance.unitedValue / 100));
+        },
+        getValue: function() {
+            let unitedValue = 0;
+            table.array.forEach(function(row, y) {
+                row.forEach(function(cellValue, x) {
+                    //console.log(cellValue);
+                    unitedValue += cellValue;
+                });
+            });
+            //console.log(unitedValue);
+            return unitedValue;
+        }
     },
     actions: {
         click: function(event) {
@@ -138,6 +165,7 @@ let game = {
                 table.cell.downgrade(coords[0], coords[1]);
             }
             canvas.draw();
+            game.balance.refresh();
         }
     }
 }
