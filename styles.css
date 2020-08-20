@@ -23,20 +23,18 @@ body {
 
 #balance {
     margin: 10px 0px;
-    color: green;
+    color: #00b7c2;
     font-size: 20px;
-    display: inline-block;
     float: right;
     padding: 3px;
 }
 
-#newGame {
-    margin: 10px 0px;
+#newGame, #restart {
+    margin: 10px 10px 10px 0px;
     color: white;
     font-size: 20px;
-    display: inline-block;
     float: left;
-    background-color: #b6e4b6;
+    background-color: #00b7c2;
     border-radius: 10px;
     padding: 3px;
 }

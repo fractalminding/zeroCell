@@ -5,6 +5,12 @@ let table = {
             table.array[i] = table.row.create(width);
         }
     },
+    originArrayUpdate: function() {
+        return JSON.parse(JSON.stringify(table.array));
+    },
+    restoreArrayFromOrigin: function() {
+        table.array = JSON.parse(JSON.stringify(table.originArray));
+    },
     downgradeBigNumbers: function() {
         let isFinished = true;
         table.array.forEach(function(row, y) {
@@ -150,6 +156,9 @@ let game = {
         game.balance.refresh();
         game.newGameButton = document.getElementById('newGame');
         game.newGameButton.addEventListener('click', game.actions.newGame);
+        game.refreshButton = document.getElementById('restart');
+        game.refreshButton.addEventListener('click', game.actions.restart);
+        table.originArray = table.originArrayUpdate();
     },
     checkEnd: function() {
         if (!table.isExistActiveCells()) game.actions.end();
@@ -197,6 +206,13 @@ let game = {
         newGame: function() {
             table.createArray(10, 10);
             table.downgradeBigNumbers();
+            table.originArrayUpdate();
+            canvas.draw();
+            game.balance.unitedValue = game.balance.getValue();
+            game.balance.refresh();
+        },
+        restart: function() {
+            table.restoreArrayFromOrigin();
             canvas.draw();
             game.balance.unitedValue = game.balance.getValue();
             game.balance.refresh();
