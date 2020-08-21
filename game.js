@@ -1,6 +1,7 @@
 "use strict";
 let table = {
     createArray: function(width, height) {
+        table.array = [];
         for (let i = 0; i < height; i++) {
             table.array[i] = table.row.create(width);
         }
@@ -32,7 +33,9 @@ let table = {
         create: function(length) {
             let rowArray = [];
             for (let i = 0; i < length; i++) {
-                rowArray.push(table.cell.getRandomNumber(1, 8));
+                rowArray.push(table.cell.getRandomNumber(
+                    1, table.cell.maxRandomNumber
+                ));
             }
             return rowArray;
         }
@@ -162,21 +165,54 @@ let game = {
         table.array = [];
         canvas.element = document.getElementById('game');
         canvas.context = canvas.element.getContext('2d');
-        table.createArray(10, 10);
+        /* table.createArray(10, 10);
         table.downgradeBigNumbers();
-        canvas.draw();
+        canvas.draw(); */
         canvas.element.addEventListener('click', game.actions.click);
         game.balance.element = document.getElementById('balance');
-        game.balance.unitedValue = game.balance.getValue();
-        game.balance.refresh();
+        //game.balance.unitedValue = game.balance.getValue();
+        //game.balance.refresh();
         game.newGameButton = document.getElementById('newGame');
-        game.newGameButton.addEventListener('click', game.actions.newGame);
+        game.newGameButton.addEventListener('click', function() {
+            game.hideGameScreen();
+            game.showNewGameScreen();
+        });
         game.refreshButton = document.getElementById('restart');
         game.refreshButton.addEventListener('click', game.actions.restart);
         game.backButton = document.getElementById('back');
         game.backButton.addEventListener('click', game.actions.back);
         table.originArray = table.originArrayUpdate();
-        table.history = [JSON.parse(JSON.stringify(table.array))];
+        //table.history = [JSON.parse(JSON.stringify(table.array))];
+        
+        game.startEasyGame = document.querySelector('.levelEasy');
+        game.startEasyGame.addEventListener('click', function() {
+            game.actions.newGame('easy');
+        });
+        game.startMediumGame = document.querySelector('.levelMedium');
+        game.startMediumGame.addEventListener('click', function() {
+            game.actions.newGame('medium');
+        });
+        game.startHardGame = document.querySelector('.levelHard');
+        game.startHardGame.addEventListener('click', function() {
+            game.actions.newGame('hard');
+        });
+        game.showNewGameScreen();
+    },
+    showNewGameScreen: function() {
+        let newGameScreen = document.getElementById('newGameScreen');
+        newGameScreen.style.display = 'table';
+    },
+    showGameScreen: function() {
+        let gameScreen = document.getElementById('gameScreen');
+        gameScreen.style.display = 'table';
+    },
+    hideNewGameScreen: function() {
+        let newGameScreen = document.getElementById('newGameScreen');
+        newGameScreen.style.display = 'none';
+    },
+    hideGameScreen: function() {
+        let gameScreen = document.getElementById('gameScreen');
+        gameScreen.style.display = 'none';
     },
     showWinScreen: function() {
         let context = canvas.context;
@@ -232,21 +268,35 @@ let game = {
         end: function() {
             canvas.drawFinishScreen();
         },
-        newGame: function() {
+        newGame: function(level) {
+            table.cell.maxRandomNumber = 8;
+            if (level == 'easy') {
+                table.cell.maxRandomNumber = 4;
+            } else if (level == 'medium') {
+                table.cell.maxRandomNumber = 6;
+            } else if (level == 'hard') {
+                table.cell.maxRandomNumber = 8;
+            }
             table.createArray(10, 10);
             table.downgradeBigNumbers();
-            table.originArrayUpdate();
-            canvas.draw();
-            game.balance.unitedValue = game.balance.getValue();
-            game.balance.refresh();
-            table.history = [table.array];
-        },
-        restart: function() {
-            table.restoreArrayFromOrigin();
+            table.originArray = table.originArrayUpdate();
             canvas.draw();
             game.balance.unitedValue = game.balance.getValue();
             game.balance.refresh();
             table.history = [JSON.parse(JSON.stringify(table.array))];
+            game.hideNewGameScreen();
+            game.showGameScreen();
+        },
+        restart: function() {
+            
+            table.restoreArrayFromOrigin();
+            //console.log(table.array);
+            canvas.draw();
+            game.balance.unitedValue = game.balance.getValue();
+            game.balance.refresh();
+            
+            table.history = [JSON.parse(JSON.stringify(table.array))];
+            
         },
         back: function() {
             //console.log(table.history);
