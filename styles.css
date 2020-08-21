@@ -12,7 +12,7 @@ body {
 }
 
 #content {
-    margin: 60px auto 0px auto;
+    margin: 0px auto 0px auto;
     display: table;
 }
 
@@ -29,12 +29,12 @@ body {
     padding: 3px;
 }
 
-#newGame, #restart {
+#newGame, #restart, #back {
     margin: 10px 10px 10px 0px;
     color: white;
     font-size: 20px;
     float: left;
     background-color: #00b7c2;
     border-radius: 10px;
-    padding: 3px;
+    padding: 3px 7px;
 }

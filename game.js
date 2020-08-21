@@ -8,6 +8,9 @@ let table = {
     originArrayUpdate: function() {
         return JSON.parse(JSON.stringify(table.array));
     },
+    updateHistory: function() {
+        table.history.push(JSON.parse(JSON.stringify(table.array)));
+    },
     restoreArrayFromOrigin: function() {
         table.array = JSON.parse(JSON.stringify(table.originArray));
     },
@@ -170,7 +173,10 @@ let game = {
         game.newGameButton.addEventListener('click', game.actions.newGame);
         game.refreshButton = document.getElementById('restart');
         game.refreshButton.addEventListener('click', game.actions.restart);
+        game.backButton = document.getElementById('back');
+        game.backButton.addEventListener('click', game.actions.back);
         table.originArray = table.originArrayUpdate();
+        table.history = [JSON.parse(JSON.stringify(table.array))];
     },
     showWinScreen: function() {
         let context = canvas.context;
@@ -220,6 +226,7 @@ let game = {
             }
             canvas.draw();
             game.balance.refresh();
+            table.updateHistory();
             game.checkEnd();
         },
         end: function() {
@@ -232,12 +239,27 @@ let game = {
             canvas.draw();
             game.balance.unitedValue = game.balance.getValue();
             game.balance.refresh();
+            table.history = [table.array];
         },
         restart: function() {
             table.restoreArrayFromOrigin();
             canvas.draw();
             game.balance.unitedValue = game.balance.getValue();
             game.balance.refresh();
+            table.history = [JSON.parse(JSON.stringify(table.array))];
+        },
+        back: function() {
+            //console.log(table.history);
+            if (table.history.length > 1) {
+                table.history.pop();
+                let tableFromHistory = JSON.parse(JSON.stringify(
+                    table.history[table.history.length - 1])
+                );
+                table.array = tableFromHistory;
+                canvas.draw();
+                game.balance.refresh();
+                //console.log(table.array);
+            }
         }
     }
 }
